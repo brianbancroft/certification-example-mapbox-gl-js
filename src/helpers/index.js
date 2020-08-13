@@ -1,1 +1,2 @@
-export { default as doubleNumber } from './doubleNumber'
+export { default as calculateX } from './calculateX'
+export { default as calculateY } from './calculateY'
