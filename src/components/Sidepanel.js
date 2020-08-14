@@ -21,7 +21,9 @@ const Sidepanel = () => {
     addNewTruck(dispatch)
   }
 
-  const vehicles = useSelector((state) => state.vehicles)
+  const vehicles = Object.values(
+    useSelector((state) => state.vehicles),
+  ).map((i) => i.showData())
 
   const VehicleCard = ({ vehicleType, company, callsign, operator }) => (
     <Box
@@ -55,7 +57,7 @@ const Sidepanel = () => {
           <TextInput />
         </Box>
       </Box>
-      <Box background="white" fill>
+      <Box background="white" fill pad={{ bottom: 'small' }}>
         <SidepanelArea>
           {vehicles.map((vehicle, index) => {
             return (

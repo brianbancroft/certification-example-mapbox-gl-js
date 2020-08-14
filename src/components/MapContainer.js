@@ -1,5 +1,6 @@
 import React from 'react'
 import { Box } from 'grommet'
+import { useSelector } from 'react-redux'
 import Map from './Map'
 
 /*
@@ -7,9 +8,14 @@ import Map from './Map'
 
 */
 const MapContainer = () => {
+  // const vehicles = useSelector((state) => state.vehicles).map((vehicle) =>
+  //   vehicle.showData(),
+  // )
+  const vehicles = []
+
   return (
     <Box fill>
-      <Map />
+      <Map vehicles={vehicles} />
     </Box>
   )
 }

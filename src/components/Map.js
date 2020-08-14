@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
+import { composeP } from 'ramda'
 
 const styles = {
   width: '100%',
@@ -8,9 +9,14 @@ const styles = {
   // position: 'absolute',
 }
 
-const MapboxGLMap = () => {
+const MapboxGLMap = ({ vehicles }) => {
   const [map, setMap] = useState(null)
   const mapContainer = useRef(null)
+
+  let waiting = true
+  const waitingVehicles = vehicles.filter((i) => i.waiting)
+  if (waitingVehicles.length) waiting = false
+  console.log('Checking for waiting vehicles ')
 
   useEffect(() => {
     mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_MAP_KEY
@@ -42,6 +48,21 @@ const MapboxGLMap = () => {
 
     if (!map) initializeMap({ setMap, mapContainer })
   }, [map])
+
+  useEffect(() => {
+    if (waiting) return
+    console.log('Map ', map)
+    console.log('Vehciles ', vehicles)
+    if (map && vehicles.length) {
+      setTimeout(() => {
+        const vehicle = vehicles[vehicles.length - 1]
+        console.log(vehicle)
+        // const marker = new mapboxgl.Marker()
+        //   .setLngLat(vehicles[vehicles.length - 1].position)
+        //   .addTo(map)
+      }, 2000)
+    }
+  }, [map, vehicles, waiting])
 
   return (
     <div

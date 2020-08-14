@@ -1,13 +1,13 @@
-const defaultState = []
+const defaultState = {}
 
 export default (state = defaultState, action) => {
   switch (action.type) {
     case 'ADD_TRUCK':
-      return [...state, action.truck]
-    case 'UPDATE_TRUCKS':
-      return state
+      return { ...state, [action.truck.callsign]: action.truck }
+    case 'UPDATE_TRUCK':
+      return { ...state, [action.truck.callsign]: action.truck }
     case 'REMOVE_TRUCK':
-      state.splice(action.index, 1)
+      delete state[action.id]
       return state
 
     default:

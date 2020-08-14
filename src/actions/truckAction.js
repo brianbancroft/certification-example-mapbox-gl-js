@@ -1,6 +1,5 @@
-import { post } from 'axios'
-import { name, company, random } from 'faker'
-import { generateRandomVehicle } from '../helpers'
+import Vehicle from '../classes/Vehicle'
+
 export const addTruck = (truck) => ({
   type: 'ADD_TRUCK',
   truck,
@@ -8,6 +7,7 @@ export const addTruck = (truck) => ({
 
 export const updateTruck = (truck) => ({
   type: 'UPDATE_TRUCK',
+  truck,
 })
 
 export const removeTruck = (id) => ({
@@ -16,17 +16,7 @@ export const removeTruck = (id) => ({
 })
 
 export const addNewTruck = async (dispatch) => {
-  const vehicle = {
-    vehicleType: generateRandomVehicle(),
-    company: company.companyName(),
-    callsign: random.alphaNumeric('4'),
-    operator: name.findName(),
-  }
+  const vehicle = new Vehicle({})
 
-  const response = await post('/.netlify/functions/register-vehicle', {
-    id: vehicle.callsign,
-  })
-  const newVehicle = { ...vehicle, ...response.data }
-
-  return dispatch(addTruck(newVehicle))
+  return dispatch(addTruck(vehicle))
 }
