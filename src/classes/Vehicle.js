@@ -14,7 +14,7 @@ class Vehicle {
       this.#position = response.data.position
       this.#thetaOffset = response.data.thetaOffset
       this.#radialModifier = response.data.radialModifier
-      this.waiting = false
+      this.loading = false
 
       const { dispatch } = store
       dispatch(updateTruck(this))
@@ -35,7 +35,7 @@ class Vehicle {
   #company = null
   callsign = null
   #operator = null
-  waiting = true
+  loading = true
   error = false
 
   #updateLocation = async () => {
@@ -56,7 +56,7 @@ class Vehicle {
     dispatch(updateTruck(this))
   }
 
-  #updateFrequency = 1000 // 15s
+  #updateFrequency = 1000 * 15 // 15s
 
   #startTracking = () => {
     setInterval(this.#updateLocation, this.#updateFrequency)
@@ -68,7 +68,20 @@ class Vehicle {
     callsign: this.callsign,
     operator: this.#operator,
     position: this.#position,
-    waiting: this.waiting,
+    loading: this.loading,
+  })
+
+  geojson = () => ({
+    type: 'Feature',
+    properties: {
+      callsign: this.callsign,
+      vehicleType: this.#vehicleType,
+      operator: this.#operator,
+    },
+    geometry: {
+      type: 'Point',
+      coordinates: this.#position,
+    },
   })
 }
 

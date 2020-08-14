@@ -43,7 +43,6 @@ const Sidepanel = ({ vehicles }) => {
         <Box height="small">
           <Text>Name: {operator}</Text>
           <Text>Company: {company}</Text>
-          <img src="https://placekitten.com/g/180/138" />
         </Box>
       </Box>
     )

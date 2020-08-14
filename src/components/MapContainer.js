@@ -10,7 +10,7 @@ import Map from './Map'
 const MapContainer = () => {
   const vehicles = useSelector(
     (state) => state.vehicles.vehiclesArray,
-  ).map((vehicle) => vehicle.showData())
+  ).map((vehicle) => vehicle.geojson())
 
   return (
     <Box fill>

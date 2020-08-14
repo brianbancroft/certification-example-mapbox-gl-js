@@ -11,6 +11,7 @@ const styles = {
 
 const MapboxGLMap = ({ vehicles }) => {
   const [map, setMap] = useState(null)
+  const [registeredVehices, setRegisteredVehicles] = useState({})
   const mapContainer = useRef(null)
 
   useEffect(() => {
@@ -44,19 +45,38 @@ const MapboxGLMap = ({ vehicles }) => {
     if (!map) initializeMap({ setMap, mapContainer })
   }, [map])
 
+  // Looks for layers to add to map
   useEffect(() => {
-    console.log('Map ', map)
-    console.log('Vehciles ', vehicles)
-    if (map && vehicles.length) {
-      console.log('Vehicles ', vehicles)
-      vehicles.forEach((i) => {
-        if (i.position.length !== 2) return
+    if (!map) return
 
-        console.log('Loading ', i.loading)
-        console.log('Position ', i.position)
-        var marker = new mapboxgl.Marker().setLngLat(i.position).addTo(map)
-      })
+    const activeLayers = map.getStyle().layers.map((i) => i.id)
+
+    for (let i = 0; i < vehicles.length; i++) {
+      let id = `point-${vehicles[i].properties.callsign}`
+      if (activeLayers.indexOf(id) === -1) {
+        map.addSource(id, {
+          type: 'geojson',
+          data: vehicles[i],
+        })
+
+        map.addLayer({
+          id,
+          type: 'circle',
+          source: id,
+          paint: {
+            'circle-radius': 10,
+            'circle-color': '#ff00ff',
+          },
+        })
+      } else {
+        map.getSource(id).setData(vehicles[i])
+      }
     }
+  }, [map, vehicles])
+
+  // Looks for layers to remove from map
+  useEffect(() => {
+    if (!map) return
   }, [map, vehicles])
 
   return (
