@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
+import { post } from 'axios'
 import { Box, Button, TextInput, Heading, Text } from 'grommet'
 import { name, company, random } from 'faker'
 import { generateRandomVehicle } from '../helpers'
-import { postToEndpoint } from '../lib'
 
 const SidepanelArea = styled(Box)`
   display: grid;
@@ -18,20 +18,19 @@ const Sidepanel = () => {
   const [editVehicle, setEditVehicle] = useState(null)
 
   const vehicleLength = vehicles.length
-
-  console.log('Vehicle lennghth ', vehicleLength)
+  const latestVehicle = vehicles[vehicles.length - 1]
 
   useEffect(() => {
-    console.log('use state for vehicles arr triggered')
     const getVehicleLocation = async (vehicle) => {
-      const response = await postToEndpoint('/register-vehicle', {
+      const response = await post('/.netlify/functions/register-vehicle', {
         id: vehicle.callsign,
       })
 
-      console.log(response)
+      const newVehicle = { ...latestVehicle, ...response.data }
+      const newVehicles = vehicles
+      newVehicles[newVehicles.length - 1] = newVehicle
+      setVehicles(newVehicles)
     }
-
-    const latestVehicle = vehicles[vehicles.length - 1]
 
     if (latestVehicle && !Array.isArray(latestVehicle.location)) {
       getVehicleLocation(latestVehicle)
