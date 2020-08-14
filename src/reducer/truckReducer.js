@@ -20,6 +20,7 @@ export default (state = defaultState, action) => {
       return { vehiclesSource, vehiclesArray: Object.values(vehiclesSource) }
     case 'REMOVE_TRUCK':
       vehiclesSource = state.vehiclesSource
+      vehiclesSource[action.id].stop()
       delete vehiclesSource[action.id]
       return { vehiclesSource, vehiclesArray: Object.values(vehiclesSource) }
 

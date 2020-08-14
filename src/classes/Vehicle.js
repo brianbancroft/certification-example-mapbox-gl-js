@@ -37,8 +37,10 @@ class Vehicle {
   #operator = null
   loading = true
   error = false
+  #continue = true
 
   #updateLocation = async () => {
+    if (!this.continue) return
     const response = await post('/.netlify/functions/ping-vehicle', {
       id: this.callsign,
       radialModifier: this.#radialModifier,
@@ -83,6 +85,10 @@ class Vehicle {
       coordinates: this.#position,
     },
   })
+
+  stop = () => {
+    this.continue = false
+  }
 }
 
 export default Vehicle

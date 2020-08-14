@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
-import { composeP } from 'ramda'
 
 const styles = {
   width: '100%',
@@ -9,17 +8,16 @@ const styles = {
   // position: 'absolute',
 }
 
+const terrainStyle = 'mapbox://styles/brianbancroft/ck2r23wm408me1csue4nbr8zq'
+const rasterStyle = 'mapbox://styles/mapbox/satellite-v9'
+
 const MapboxGLMap = ({ vehicles }) => {
   const [map, setMap] = useState(null)
-  const [registeredVehices, setRegisteredVehicles] = useState({})
+  const [basemapStyle, setBasemapStyle] = useState(terrainStyle)
   const mapContainer = useRef(null)
 
   useEffect(() => {
     mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_MAP_KEY
-
-    const terrainStyle =
-      'mapbox://styles/brianbancroft/ck2r23wm408me1csue4nbr8zq'
-    const rasterStyle = 'mapbox://styles/mapbox/satellite-v9'
 
     const initializeMap = ({ setMap, mapContainer }) => {
       const map = new mapboxgl.Map({
@@ -33,17 +31,62 @@ const MapboxGLMap = ({ vehicles }) => {
         setMap(map)
         map.resize()
       })
-
-      map.on('zoomend', function () {
-        // TODO: Feed into state, the layer once you add them.
-        // debugger
-
-        map.setStyle(map.getZoom() > 10 ? rasterStyle : terrainStyle)
-      })
     }
 
     if (!map) initializeMap({ setMap, mapContainer })
   }, [map])
+
+  // Sets map layer switch effect
+  useEffect(() => {
+    if (!map) return
+
+    map.on('zoomend', async function () {
+      const mapZoom = map.getZoom()
+
+      const vectorBasemap = basemapStyle === terrainStyle
+
+      if ((mapZoom > 10 && !vectorBasemap) || (mapZoom <= 10 && vectorBasemap))
+        return
+
+      const selectedStyle = mapZoom > 10 ? rasterStyle : terrainStyle
+      map.setStyle(selectedStyle)
+      setBasemapStyle(selectedStyle)
+    })
+  }, [map, basemapStyle])
+
+  useEffect(() => {
+    if (!map) return
+    console.log('Function load all vehicle layers triggered', vehicles)
+    const loadVehicles = () => {
+      for (let i = 0; i < vehicles.length; i++) {
+        let id = `point-${vehicles[i].properties.callsign}`
+
+        console.log('Attempting to add for vehicle ', id)
+
+        map.addSource(id, {
+          type: 'geojson',
+          data: vehicles[i],
+        })
+
+        map.addLayer({
+          id,
+          type: 'circle',
+          source: id,
+          paint: {
+            'circle-radius': 10,
+            'circle-color': '#ff00ff',
+          },
+        })
+      }
+
+      console.log(
+        'Map layers ',
+        map.getStyle().layers.map((i) => i.id),
+      )
+    }
+
+    setTimeout(loadVehicles, 2000)
+  }, [basemapStyle])
 
   // Looks for layers to add to map
   useEffect(() => {
@@ -72,11 +115,29 @@ const MapboxGLMap = ({ vehicles }) => {
         map.getSource(id).setData(vehicles[i])
       }
     }
+    console.log(
+      'Map layers ',
+      map.getStyle().layers.map((i) => i.id),
+    )
   }, [map, vehicles])
 
-  // Looks for layers to remove from map
+  // Removes layers from the map
   useEffect(() => {
     if (!map) return
+    const activeLayers = map
+      .getStyle()
+      .layers.map((i) => i.id)
+      .filter((i) => /^point-/.test(i))
+    const loadedLayers = vehicles.map((i) => `point-${i.properties.callsign}`)
+
+    if (activeLayers.length <= loadedLayers.length) return
+
+    activeLayers.forEach((i) => {
+      if (loadedLayers.indexOf(i) !== -1) {
+        map.removeLayer(i)
+        map.removeSource(i)
+      }
+    })
   }, [map, vehicles])
 
   return (
