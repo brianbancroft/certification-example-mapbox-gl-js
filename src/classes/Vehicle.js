@@ -56,7 +56,7 @@ class Vehicle {
     dispatch(updateTruck(this))
   }
 
-  #updateFrequency = 15 * 1000 // 15s
+  #updateFrequency = 1000 // 15s
 
   #startTracking = () => {
     setInterval(this.#updateLocation, this.#updateFrequency)

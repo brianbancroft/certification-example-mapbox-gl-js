@@ -49,6 +49,13 @@ const MapboxGLMap = ({ vehicles }) => {
     console.log('Vehciles ', vehicles)
     if (map && vehicles.length) {
       console.log('Vehicles ', vehicles)
+      vehicles.forEach((i) => {
+        if (i.position.length !== 2) return
+
+        console.log('Loading ', i.loading)
+        console.log('Position ', i.position)
+        var marker = new mapboxgl.Marker().setLngLat(i.position).addTo(map)
+      })
     }
   }, [map, vehicles])
 
