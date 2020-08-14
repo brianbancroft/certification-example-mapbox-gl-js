@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Header, Main, Footer } from 'grommet'
+import { Box, Header, Main } from 'grommet'
 
 import SidePanel from './Sidepanel'
 import MapContainer from './MapContainer'
