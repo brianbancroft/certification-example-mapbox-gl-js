@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
+
+import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { post } from 'axios'
 import { Box, Button, TextInput, Heading, Text } from 'grommet'
-import { name, company, random } from 'faker'
-import { generateRandomVehicle } from '../helpers'
+import { addNewTruck } from '../actions/truckAction'
 
 const SidepanelArea = styled(Box)`
   display: grid;
@@ -14,39 +15,13 @@ const SidepanelArea = styled(Box)`
 `
 
 const Sidepanel = () => {
-  const [vehicles, setVehicles] = useState([])
-  const [editVehicle, setEditVehicle] = useState(null)
+  const dispatch = useDispatch()
 
-  const vehicleLength = vehicles.length
-  const latestVehicle = vehicles[vehicles.length - 1]
+  const generateTruck = () => {
+    addNewTruck(dispatch)
+  }
 
-  useEffect(() => {
-    const getVehicleLocation = async (vehicle) => {
-      const response = await post('/.netlify/functions/register-vehicle', {
-        id: vehicle.callsign,
-      })
-
-      const newVehicle = { ...latestVehicle, ...response.data }
-      const newVehicles = vehicles
-      newVehicles[newVehicles.length - 1] = newVehicle
-      setVehicles(newVehicles)
-    }
-
-    if (latestVehicle && !Array.isArray(latestVehicle.location)) {
-      getVehicleLocation(latestVehicle)
-    }
-  }, [vehicleLength])
-
-  const addNewVehicle = () =>
-    setVehicles([
-      ...vehicles,
-      {
-        vehicleType: generateRandomVehicle(),
-        company: company.companyName(),
-        callsign: random.alphaNumeric('4'),
-        operator: name.findName(),
-      },
-    ])
+  const vehicles = useSelector((state) => state.vehicles)
 
   const VehicleCard = ({ vehicleType, company, callsign, operator }) => (
     <Box
@@ -83,16 +58,12 @@ const Sidepanel = () => {
       <Box background="white" fill>
         <SidepanelArea>
           {vehicles.map((vehicle, index) => {
-            if (index === editVehicle) {
-              return <h1>edit me</h1>
-            } else {
-              return (
-                <VehicleCard
-                  {...vehicle}
-                  key={`${vehicle.vehicleType}-${vehicle.callsign}`}
-                />
-              )
-            }
+            return (
+              <VehicleCard
+                {...vehicle}
+                key={`${vehicle.vehicleType}-${vehicle.callsign}`}
+              />
+            )
           })}
           <Box pad="medium">
             <Button
@@ -101,7 +72,7 @@ const Sidepanel = () => {
               color="accent-3"
               label="Register Vehicle"
               hoverIndicator
-              onClick={addNewVehicle}
+              onClick={generateTruck}
             />
           </Box>
         </SidepanelArea>
