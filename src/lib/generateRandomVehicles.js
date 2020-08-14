@@ -2,8 +2,6 @@ import { pipe } from 'ramda'
 import { name, company, random } from 'faker'
 import { times } from 'lodash'
 
-import { calculateX, calculateY } from '../helpers'
-
 const generateTheta = () => (Date.now() / 3600) % 360 // (0, θ, 360]
 const generateRandomOffset = () => Math.floor(Math.random() * 720 + 1) - 360 // (-360, δθ, 360)
 const radialModifier = () => (Math.floor(Math.random() * 50 + 1) + 50) / 100 // (0.5, δr, 1)
@@ -23,13 +21,47 @@ const getVehicleOffsettedThetaHof = ({ theta }) => (vehicle) => ({
   theta: offsetTheta(theta, vehicle.thetaOffset),
 })
 
-const serializeOutput = ({ position, name, company, callsign, operator }) => ({
+const serializeOutput = ({
   position,
   name,
   company,
   callsign,
   operator,
+  thetaOffset,
+  radialModifier,
+}) => ({
+  position,
+  name,
+  company,
+  callsign,
+  operator,
+  thetaOffset,
+  radialModifier,
 })
+
+const calculateX = ({ theta, xmin, xmax }) => {
+  if (theta < 90) {
+    return xmin
+  } else if (theta >= 90 && theta < 180) {
+    return xmin + (xmax - xmin) * ((theta - 90) / 90)
+  } else if (theta >= 180 && theta < 270) {
+    return xmax
+  } else if (theta >= 270 && theta <= 360) {
+    return xmax - ((xmax - xmin) * (theta - 270)) / 90
+  } else throw Error(`Angle outside of bounds ', ${theta}`)
+}
+
+const calculateY = ({ theta, ymin, ymax }) => {
+  if (theta < 90) {
+    return ymin + (ymax - ymin) * (theta / 90)
+  } else if (theta >= 90 && theta < 180) {
+    return ymax
+  } else if (theta >= 180 && theta < 270) {
+    return ymax - ((ymax - ymin) * (theta - 180)) / 90
+  } else if (theta >= 270 && theta <= 360) {
+    return ymin
+  } else throw Error(`Angle outside of bounds ', ${theta}`)
+}
 
 const generatePositionHof = (coreData) => (vehicle) => {
   const { theta, radialModifier } = vehicle
