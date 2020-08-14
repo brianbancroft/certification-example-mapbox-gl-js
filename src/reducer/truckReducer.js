@@ -1,14 +1,27 @@
-const defaultState = {}
+const defaultState = {
+  vehiclesArray: [],
+  vehiclesSource: {},
+}
 
 export default (state = defaultState, action) => {
+  let vehiclesSource
   switch (action.type) {
     case 'ADD_TRUCK':
-      return { ...state, [action.truck.callsign]: action.truck }
+      vehiclesSource = {
+        ...state.vehiclesSource,
+        [action.truck.callsign]: action.truck,
+      }
+      return { vehiclesSource, vehiclesArray: Object.values(vehiclesSource) }
     case 'UPDATE_TRUCK':
-      return { ...state, [action.truck.callsign]: action.truck }
+      vehiclesSource = {
+        ...state.vehiclesSource,
+        [action.truck.callsign]: action.truck,
+      }
+      return { vehiclesSource, vehiclesArray: Object.values(vehiclesSource) }
     case 'REMOVE_TRUCK':
-      delete state[action.id]
-      return state
+      vehiclesSource = state.vehiclesSource
+      delete vehiclesSource[action.id]
+      return { vehiclesSource, vehiclesArray: Object.values(vehiclesSource) }
 
     default:
       return state

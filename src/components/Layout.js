@@ -1,7 +1,7 @@
 import React from 'react'
 import { Box, Header, Main } from 'grommet'
 
-import SidePanel from './Sidepanel'
+import SidePanelWrapper from './SidepanelWrapper'
 import MapContainer from './MapContainer'
 
 const Layout = ({ content }) => {
@@ -13,7 +13,7 @@ const Layout = ({ content }) => {
         </Header>
         <Box fill direction="row">
           <MapContainer />
-          <SidePanel />
+          <SidePanelWrapper />
         </Box>
       </Main>
     </>

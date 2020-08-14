@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { post } from 'axios'
 import { Box, Button, TextInput, Heading, Text } from 'grommet'
-import { addNewTruck } from '../actions/truckAction'
+import { Close } from 'grommet-icons'
+import { addNewTruck, removeTruck } from '../actions/truckAction'
 
 const SidepanelArea = styled(Box)`
   display: grid;
@@ -14,35 +15,39 @@ const SidepanelArea = styled(Box)`
   height: 100%;
 `
 
-const Sidepanel = () => {
+const Sidepanel = ({ vehicles }) => {
   const dispatch = useDispatch()
 
   const generateTruck = () => {
     addNewTruck(dispatch)
   }
 
-  const vehicles = Object.values(
-    useSelector((state) => state.vehicles),
-  ).map((i) => i.showData())
-
-  const VehicleCard = ({ vehicleType, company, callsign, operator }) => (
-    <Box
-      margin="small"
-      border={{ size: 'small', color: 'dark-4' }}
-      height="267px"
-    >
-      <Box background="light-3" pad="small">
-        <Heading level="4" margin={{ vertical: 'xxsmall' }}>
-          {vehicleType} - {callsign}
-        </Heading>
+  const VehicleCard = ({ vehicleType, company, callsign, operator }) => {
+    const deleteTruck = () => dispatch(removeTruck(callsign))
+    return (
+      <Box
+        margin="small"
+        border={{ size: 'small', color: 'dark-4' }}
+        height="267px"
+      >
+        <Box background="light-3" pad="small">
+          <Box>
+            <Heading level="4" margin={{ vertical: 'xxsmall' }}>
+              {vehicleType} - {callsign}
+            </Heading>
+          </Box>
+          <Box>
+            <Button icon={<Close />} onClick={deleteTruck} />
+          </Box>
+        </Box>
+        <Box height="small">
+          <Text>Name: {operator}</Text>
+          <Text>Company: {company}</Text>
+          <img src="https://placekitten.com/g/180/138" />
+        </Box>
       </Box>
-      <Box height="small">
-        <Text>Name: {operator}</Text>
-        <Text>Company: {company}</Text>
-        <img src="https://placekitten.com/g/180/138" />
-      </Box>
-    </Box>
-  )
+    )
+  }
 
   return (
     <Box
