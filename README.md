@@ -1,6 +1,6 @@
 # TODOs
 
-- [ ] Map should have a custom (non-default) style
+- [x] Map should have a custom (non-default) style
 - [ ] Map should present a series of points, updating in real-time
 - [ ] Hovering over a point should change a visual attribute (size,  color, etc)
 - [ ] Hovering over a point should create a popup
@@ -9,4 +9,4 @@
 - [ ] Map should center on click
 - [ ] Clicking on point should add an HTML marker
 - [ ] Points should be filterable based on properties (through some kind UI)
-- [ ] Map should switch to satellite imagery as user zooms in
+- [x] Map should switch to satellite imagery as user zooms in
