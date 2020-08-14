@@ -1,4 +1,7 @@
 exports.handler = async (event, _context, callback) => {
+  if (event.httpMethod === 'OPTIONS') {
+    return callback(null, { statusCode: 200, body: 'ok' })
+  }
   if (event.httpMethod !== 'POST') {
     return callback(null, { statusCode: 405, body: 'Method Not Allowed' })
   }
@@ -60,7 +63,7 @@ exports.handler = async (event, _context, callback) => {
 
   if (radialModifier < 0.5 || radialModifier > 1)
     return { statusCode: 400, body: 'Invalid parameter radialmodifier' }
-  if (thetaOffset > 360 || thetaOffset < 0)
+  if (thetaOffset > 360 || thetaOffset < -360)
     return { statusCode: 400, body: 'Invalid parameter theta offset' }
 
   const { initialxmin, initialymin, initialxmax, initialymax } = coreData

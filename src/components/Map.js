@@ -23,8 +23,8 @@ const MapboxGLMap = () => {
       const map = new mapboxgl.Map({
         container: mapContainer.current,
         style: terrainStyle,
-        center: [0, 0],
-        zoom: 5,
+        center: [-112.1038292, 56.7897412],
+        zoom: 8,
       })
 
       map.on('load', () => {

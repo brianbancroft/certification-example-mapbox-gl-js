@@ -1,5 +1,10 @@
 exports.handler = async (event, _context, callback) => {
+  if (event.httpMethod === 'OPTIONS') {
+    return callback(null, { statusCode: 200, body: 'ok' })
+  }
+
   if (event.httpMethod !== 'POST') {
+    console.log('Attempted to trigger this using ', event.httpMethod)
     return callback(null, { statusCode: 405, body: 'Method Not Allowed' })
   }
 
