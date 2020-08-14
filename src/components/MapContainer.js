@@ -8,10 +8,9 @@ import Map from './Map'
 
 */
 const MapContainer = () => {
-  // const vehicles = useSelector((state) => state.vehicles).map((vehicle) =>
-  //   vehicle.showData(),
-  // )
-  const vehicles = []
+  const vehicles = useSelector(
+    (state) => state.vehicles.vehiclesArray,
+  ).map((vehicle) => vehicle.showData())
 
   return (
     <Box fill>
