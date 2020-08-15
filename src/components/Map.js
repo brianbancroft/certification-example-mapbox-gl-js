@@ -15,8 +15,8 @@ const rasterStyle = 'mapbox://styles/mapbox/satellite-v9'
 
 const MapboxGLMap = ({ vehicles }) => {
   const [map, setMap] = useState(null)
-  const [basemapStyle, setBasemapStyle] = useState(terrainStyle)
   const mapContainer = useRef(null)
+  const [basemapStyle, setBasemapStyle] = useState(false)
 
   useEffect(() => {
     mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_MAP_KEY
@@ -26,7 +26,7 @@ const MapboxGLMap = ({ vehicles }) => {
         container: mapContainer.current,
         style: terrainStyle,
         center: [-112.1038292, 56.7897412],
-        zoom: 9.5,
+        zoom: 7,
       })
 
       map.on('load', () => {
@@ -45,7 +45,11 @@ const MapboxGLMap = ({ vehicles }) => {
     map.on('zoomend', async function () {
       const mapZoom = map.getZoom()
 
-      const vectorBasemap = basemapStyle === terrainStyle
+      const vectorBasemap =
+        map
+          .getStyle()
+          .layers.map((i) => i.id)
+          .indexOf('crop') !== -1
 
       if ((mapZoom > 10 && !vectorBasemap) || (mapZoom <= 10 && vectorBasemap))
         return
@@ -54,13 +58,16 @@ const MapboxGLMap = ({ vehicles }) => {
       map.setStyle(selectedStyle)
       setBasemapStyle(selectedStyle)
     })
-  }, [map, basemapStyle])
+  }, [map])
 
   useEffect(() => {
     if (!map) return
     const loadVehicles = () => {
+      const activeLayers = map.getStyle().layers.map((i) => i.id)
+
       for (let i = 0; i < vehicles.length; i++) {
         let id = `point-${vehicles[i].properties.callsign}`
+        if (activeLayers.indexOf(id) !== -1) continue
 
         map.addSource(id, {
           type: 'geojson',
@@ -77,11 +84,6 @@ const MapboxGLMap = ({ vehicles }) => {
           },
         })
       }
-
-      console.log(
-        'Map layers ',
-        map.getStyle().layers.map((i) => i.id),
-      )
     }
 
     setTimeout(loadVehicles, 2000)

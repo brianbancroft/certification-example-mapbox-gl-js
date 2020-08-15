@@ -1,6 +1,6 @@
 exports.boundingBox = {
-  initialxmin: -112.204973,
+  initialxmin: -113.204973,
   initialymin: 56.388894,
-  initialxmax: -112.273994,
+  initialxmax: -111.273994,
   initialymax: 57.004951,
 }
