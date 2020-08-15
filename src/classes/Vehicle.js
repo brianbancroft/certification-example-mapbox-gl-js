@@ -40,7 +40,7 @@ class Vehicle {
   #continue = true
 
   #updateLocation = async () => {
-    if (!this.continue) return
+    if (!this.#continue) return
     const response = await post('/.netlify/functions/ping-vehicle', {
       id: this.callsign,
       radialModifier: this.#radialModifier,
