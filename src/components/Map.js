@@ -1,12 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
+import styled from 'styled-components'
 
-const styles = {
-  width: '100%',
-  height: '100%',
-  // position: 'absolute',
-}
+import { colorMap } from '../constants/truckTypes'
+
+const MapContainer = styled.div`
+  width: 100%;
+  height: 100%;
+`
 
 const terrainStyle = 'mapbox://styles/brianbancroft/ck2r23wm408me1csue4nbr8zq'
 const rasterStyle = 'mapbox://styles/mapbox/satellite-v9'
@@ -24,7 +26,7 @@ const MapboxGLMap = ({ vehicles }) => {
         container: mapContainer.current,
         style: terrainStyle,
         center: [-112.1038292, 56.7897412],
-        zoom: 8,
+        zoom: 9.5,
       })
 
       map.on('load', () => {
@@ -56,12 +58,9 @@ const MapboxGLMap = ({ vehicles }) => {
 
   useEffect(() => {
     if (!map) return
-    console.log('Function load all vehicle layers triggered', vehicles)
     const loadVehicles = () => {
       for (let i = 0; i < vehicles.length; i++) {
         let id = `point-${vehicles[i].properties.callsign}`
-
-        console.log('Attempting to add for vehicle ', id)
 
         map.addSource(id, {
           type: 'geojson',
@@ -74,7 +73,7 @@ const MapboxGLMap = ({ vehicles }) => {
           source: id,
           paint: {
             'circle-radius': 10,
-            'circle-color': '#ff00ff',
+            'circle-color': colorMap[vehicles[i].properties.vehicleType],
           },
         })
       }
@@ -108,17 +107,17 @@ const MapboxGLMap = ({ vehicles }) => {
           source: id,
           paint: {
             'circle-radius': 10,
-            'circle-color': '#ff00ff',
+            'circle-color': colorMap[vehicles[i].properties.vehicleType],
           },
         })
       } else {
         map.getSource(id).setData(vehicles[i])
       }
     }
-    console.log(
-      'Map layers ',
-      map.getStyle().layers.map((i) => i.id),
-    )
+    // console.log(
+    //   'Map layers ',
+    //   map.getStyle().layers.map((i) => i.id),
+    // )
   }, [map, vehicles])
 
   // Removes layers from the map
@@ -141,11 +140,10 @@ const MapboxGLMap = ({ vehicles }) => {
   }, [map, vehicles])
 
   return (
-    <div
+    <MapContainer
       ref={(el) => {
         mapContainer.current = el
       }}
-      style={styles}
     />
   )
 }

@@ -1,16 +1,6 @@
-const generateRandomVehicle = () => {
-  const vehicleTypes = [
-    'ATV',
-    'Mulcher',
-    'Pickup',
-    'Rock Truck',
-    'Saw Crew',
-    'Water Truck',
-    'Vac Truck',
-    'Plow',
-    'Excavator',
-  ]
+import vehicleTypes from '../constants/truckTypes'
 
-  return vehicleTypes[Math.floor(Math.random() * vehicleTypes.length)]
-}
+const generateRandomVehicle = () =>
+  vehicleTypes[Math.floor(Math.random() * vehicleTypes.length)]
+
 export default generateRandomVehicle
