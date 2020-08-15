@@ -33,6 +33,10 @@ const MapboxGLMap = ({ vehicles }) => {
         setMap(map)
         map.resize()
       })
+
+      map.on('click', ({ lngLat: center }) => {
+        map.flyTo({ center })
+      })
     }
 
     if (!map) initializeMap({ setMap, mapContainer })
