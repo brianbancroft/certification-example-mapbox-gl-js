@@ -1,16 +1,11 @@
+const { boundingBox } = require('./coreData')
+
 exports.handler = async (event, _context, callback) => {
   if (event.httpMethod === 'OPTIONS') {
     return callback(null, { statusCode: 200, body: 'ok' })
   }
   if (event.httpMethod !== 'POST') {
     return callback(null, { statusCode: 405, body: 'Method Not Allowed' })
-  }
-
-  const coreData = {
-    initialxmin: -112.104973,
-    initialymin: 56.788894,
-    initialxmax: -112.073994,
-    initialymax: 56.804951,
   }
 
   const generateTheta = () => (Date.now() / 3600) % 360 // (0, θ, 360]
@@ -66,7 +61,7 @@ exports.handler = async (event, _context, callback) => {
   if (thetaOffset > 360 || thetaOffset < -360)
     return { statusCode: 400, body: 'Invalid parameter theta offset' }
 
-  const { initialxmin, initialymin, initialxmax, initialymax } = coreData
+  const { initialxmin, initialymin, initialxmax, initialymax } = boundingBox
 
   const xRadius = (initialxmax - initialxmin) / 2
   const yRadius = (initialymax - initialymin) / 2
