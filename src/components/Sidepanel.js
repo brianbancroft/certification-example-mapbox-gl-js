@@ -7,6 +7,8 @@ import { Box, Button, TextInput, Heading, Text } from 'grommet'
 import { Close } from 'grommet-icons'
 import { addNewTruck, removeTruck } from '../actions/truckAction'
 
+import SidepanelVehicleCard from './SidepanelVehicleCard'
+
 const SidepanelArea = styled(Box)`
   display: grid;
   grid-template-rows: repeat(auto-fill, 267px);
@@ -17,35 +19,9 @@ const SidepanelArea = styled(Box)`
 
 const Sidepanel = ({ vehicles }) => {
   const dispatch = useDispatch()
-
+  const { hoveredVehicle } = useSelector((state) => state.vehicles)
   const generateTruck = () => {
     addNewTruck(dispatch)
-  }
-
-  const VehicleCard = ({ vehicleType, company, callsign, operator }) => {
-    const deleteTruck = () => dispatch(removeTruck(callsign))
-    return (
-      <Box
-        margin="small"
-        border={{ size: 'small', color: 'dark-4' }}
-        height="267px"
-      >
-        <Box background="light-3" pad="small">
-          <Box>
-            <Heading level="4" margin={{ vertical: 'xxsmall' }}>
-              {vehicleType} - {callsign}
-            </Heading>
-          </Box>
-          <Box>
-            <Button icon={<Close />} onClick={deleteTruck} />
-          </Box>
-        </Box>
-        <Box height="small">
-          <Text>Name: {operator}</Text>
-          <Text>Company: {company}</Text>
-        </Box>
-      </Box>
-    )
   }
 
   return (
@@ -65,9 +41,11 @@ const Sidepanel = ({ vehicles }) => {
         <SidepanelArea>
           {vehicles.map((vehicle, index) => {
             return (
-              <VehicleCard
+              <SidepanelVehicleCard
                 {...vehicle}
                 key={`${vehicle.vehicleType}-${vehicle.callsign}`}
+                deleteTruck={(callsign) => dispatch(removeTruck(callsign))}
+                hoveredVehicle={hoveredVehicle}
               />
             )
           })}

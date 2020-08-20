@@ -1,5 +1,6 @@
 const defaultState = {
   vehiclesSource: {},
+  hoveredVehicle: '',
 }
 
 export default (state = defaultState, action) => {
@@ -10,24 +11,21 @@ export default (state = defaultState, action) => {
         ...state.vehiclesSource,
         [action.truck.callsign]: action.truck,
       }
-      return {
-        vehiclesSource,
-      }
+      return { ...state, vehiclesSource }
     case 'UPDATE_TRUCK':
       vehiclesSource = {
         ...state.vehiclesSource,
         [action.truck.callsign]: action.truck,
       }
-      return {
-        vehiclesSource,
-      }
+      return { ...state, vehiclesSource }
     case 'REMOVE_TRUCK':
       vehiclesSource = state.vehiclesSource
       vehiclesSource[action.id].stop()
       delete vehiclesSource[action.id]
-      return {
-        vehiclesSource,
-      }
+      return { ...state, vehiclesSource }
+
+    case 'SET_HOVERED_VEHICLE':
+      return { ...state, hoveredVehicle: action.vehicle }
 
     default:
       return state

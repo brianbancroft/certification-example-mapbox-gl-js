@@ -15,6 +15,11 @@ export const removeTruck = (id) => ({
   id,
 })
 
+export const setHoveredVehicle = (vehicle) => ({
+  type: 'SET_HOVERED_VEHICLE',
+  vehicle,
+})
+
 export const addNewTruck = async (dispatch) => {
   const vehicle = new Vehicle({})
 

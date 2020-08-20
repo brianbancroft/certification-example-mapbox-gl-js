@@ -23,3 +23,29 @@ export const colorMap = {
   Excavator: '#bc80bd',
   Grater: '#ccebc5',
 }
+
+export const mapboxColourExpression = [
+  'case',
+  ['==', ['get', 'vehicleType'], 'ATV'],
+  '#8dd3c7',
+  ['==', ['get', 'vehicleType'], 'Mulcher'],
+  '#ffffb3',
+  ['==', ['get', 'vehicleType'], 'Pickup'],
+  '#bebada',
+  ['==', ['get', 'vehicleType'], 'Rock Truck'],
+  '#fb8072',
+  ['==', ['get', 'vehicleType'], 'Saw Crew'],
+  '#80b1d3',
+  ['==', ['get', 'vehicleType'], 'Water Truck'],
+  '#fdb462',
+  ['==', ['get', 'vehicleType'], 'Vac Truck'],
+  '#b3de69',
+  ['==', ['get', 'vehicleType'], 'Plow'],
+  '#fccde5',
+  ['==', ['get', 'vehicleType'], 'Excavator'],
+  '#bc80bd',
+  ['==', ['get', 'vehicleType'], 'Grater'],
+  '#ccebc5',
+  // One should never get red. Red bad.
+  '#ff0000',
+]

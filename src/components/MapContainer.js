@@ -14,11 +14,16 @@ const MapContainer = () => {
   }
 
   const vehiclesSource = useSelector((state) => state.vehicles.vehiclesSource)
-  geojson.features = Object.values(vehiclesSource).map((i) => i.geojson())
+  const { hoveredVehicle } = useSelector((state) => state.vehicles)
+
+  geojson.features = Object.values(vehiclesSource).map((i, id) => ({
+    ...i.geojson(),
+    id,
+  }))
 
   return (
     <Box fill>
-      <Map geojson={geojson} />
+      <Map geojson={geojson} hoveredVehicle={hoveredVehicle} />
     </Box>
   )
 }

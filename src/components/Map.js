@@ -2,8 +2,9 @@ import React, { useEffect, useRef, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import styled from 'styled-components'
-
-import { colorMap } from '../constants/truckTypes'
+import { useDispatch } from 'react-redux'
+import { setHoveredVehicle } from '../actions/truckAction'
+import { mapboxColourExpression } from '../constants/truckTypes'
 
 const MapContainer = styled.div`
   width: 100%;
@@ -13,12 +14,14 @@ const MapContainer = styled.div`
 const terrainStyle = 'mapbox://styles/brianbancroft/ck2r23wm408me1csue4nbr8zq'
 const rasterStyle = 'mapbox://styles/mapbox/satellite-v9'
 
-const MapboxGLMap = ({ geojson }) => {
+const MapboxGLMap = ({ geojson, hoveredVehicle }) => {
   const [map, setMap] = useState(null)
   const mapContainer = useRef(null)
   const [sourceData, setSourceData] = useState({})
   const [basemapStyle, setBasemapStyle] = useState(false)
   const [popup, setPopup] = useState(null)
+  const dispatch = useDispatch()
+  const setHover = (id) => dispatch(setHoveredVehicle(id))
 
   useEffect(() => {
     mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_MAP_KEY
@@ -92,32 +95,51 @@ const MapboxGLMap = ({ geojson }) => {
       filter: ['has', 'vehicleType'],
       paint: {
         'circle-radius': 10,
-        'circle-color': [
+        'circle-stroke-color': '#222',
+        'circle-stroke-width': [
           'case',
-          ['==', ['get', 'vehicleType'], 'ATV'],
-          '#8dd3c7',
-          ['==', ['get', 'vehicleType'], 'Mulcher'],
-          '#ffffb3',
-          ['==', ['get', 'vehicleType'], 'Pickup'],
-          '#bebada',
-          ['==', ['get', 'vehicleType'], 'Rock Truck'],
-          '#fb8072',
-          ['==', ['get', 'vehicleType'], 'Saw Crew'],
-          '#80b1d3',
-          ['==', ['get', 'vehicleType'], 'Water Truck'],
-          '#fdb462',
-          ['==', ['get', 'vehicleType'], 'Vac Truck'],
-          '#b3de69',
-          ['==', ['get', 'vehicleType'], 'Plow'],
-          '#fccde5',
-          ['==', ['get', 'vehicleType'], 'Excavator'],
-          '#bc80bd',
-          ['==', ['get', 'vehicleType'], 'Grater'],
-          '#ccebc5',
-          // One should never get red. Red bad.
-          '#ff0000',
+          ['boolean', ['feature-state', 'hover'], false],
+          2,
+          0.5,
         ],
+        'circle-color': mapboxColourExpression,
       },
+    })
+
+    let hoverFeatureId
+
+    map.on('mouseenter', 'vehicles', function (e) {
+      console.log('Mouse enter triggered')
+
+      map.getCanvas().style.cursor = 'pointer'
+      if (e.features.length > 0) {
+        if (hoverFeatureId) {
+          console.log('Setting hover feature id false')
+          map.setFeatureState(
+            { source: 'vehicles', id: hoverFeatureId },
+            { hover: false },
+          )
+        }
+
+        hoverFeatureId = e.features[0].id
+        console.log('Setting hover feature id true')
+        map.setFeatureState(
+          { source: 'vehicles', id: hoverFeatureId },
+          { hover: true },
+        )
+        const { callsign } = e.features[0].properties
+        setHover(callsign)
+      }
+    })
+
+    map.on('mouseleave', 'vehicles', function () {
+      map.getCanvas().style.cursor = ''
+
+      // Doing a single leave is not always reliable
+      geojson.features.forEach(({ id }) => {
+        map.setFeatureState({ source: 'vehicles', id }, { hover: false })
+      })
+      setHover('')
     })
   }, [map, geojson])
 
@@ -133,6 +155,29 @@ const MapboxGLMap = ({ geojson }) => {
     if (map && sourceData.data.length > 0) {
     } else console.log('Nothing in  map or sourceData ', map, sourceData.data)
   }, [sourceData])
+
+  // Sets hover effect on marker if sidepanel vehicle hovered over
+  useEffect(() => {
+    if (!map) return
+
+    if (hoveredVehicle) {
+      geojson.features.forEach((feature) => {
+        if (feature.properties.callsign === hoveredVehicle) {
+          map.setFeatureState(
+            {
+              source: 'vehicles',
+              id: feature.id,
+            },
+            { hover: true },
+          )
+        }
+      })
+    } else {
+      geojson.features.forEach(({ id }) => {
+        map.setFeatureState({ source: 'vehicles', id }, { hover: false })
+      })
+    }
+  }, [hoveredVehicle])
 
   return (
     <MapContainer
