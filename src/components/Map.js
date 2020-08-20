@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
+
+import { get } from 'axios'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import styled from 'styled-components'
@@ -13,6 +15,11 @@ const MapContainer = styled.div`
 
 const terrainStyle = 'mapbox://styles/brianbancroft/ck2r23wm408me1csue4nbr8zq'
 const rasterStyle = 'mapbox://styles/mapbox/satellite-v9'
+
+// Generates HTML For mapbox popup
+const generatepopup = ({ callsign, vehicleType, message }) => {
+  return `<div><div><strong>${callsign}</strong></div><div>Latest message</div><div>${message}</div></div>`
+}
 
 const MapboxGLMap = ({ geojson, hoveredVehicle }) => {
   const [map, setMap] = useState(null)
@@ -108,7 +115,7 @@ const MapboxGLMap = ({ geojson, hoveredVehicle }) => {
 
     let hoverFeatureId
 
-    map.on('mouseenter', 'vehicles', function (e) {
+    map.on('mouseenter', 'vehicles', async function (e) {
       console.log('Mouse enter triggered')
 
       map.getCanvas().style.cursor = 'pointer'
@@ -130,6 +137,24 @@ const MapboxGLMap = ({ geojson, hoveredVehicle }) => {
         const { callsign } = e.features[0].properties
         setHover(callsign)
       }
+
+      var coordinates = e.features[0].geometry.coordinates.slice()
+      var { callsign, vehicleType } = e.features[0].properties
+
+      while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360
+      }
+
+      const { data: message } = await get(
+        `/.netlify/functions/latest-message?callsign=${callsign}`,
+      )
+
+      // Populate the popup and set its coordinates
+      // based on the feature found.
+      popup
+        .setLngLat(coordinates)
+        .setHTML(generatepopup({ callsign, vehicleType, message }))
+        .addTo(map)
     })
 
     map.on('mouseleave', 'vehicles', function () {
@@ -147,6 +172,8 @@ const MapboxGLMap = ({ geojson, hoveredVehicle }) => {
   useEffect(() => {
     if (!map) return
     if (!map.getSource('vehicles')) return
+
+    // popup.remove()
 
     map.getSource('vehicles').setData(geojson)
   }, [map, geojson])

@@ -2,7 +2,7 @@
 
 - [x] Map should have a custom (non-default) style
 - [x] Map should present a series of points, updating in real-time
-- [ ] Hovering over a point should change a visual attribute (size,  color, etc)
+- [x] Hovering over a point should change a visual attribute (size,  color, etc)
 - [ ] Hovering over a point should create a popup
 - [ ] Popups should contain data from an external source AND properties of the point
 - [ ] Map should be searchable
