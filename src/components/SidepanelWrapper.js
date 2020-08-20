@@ -3,9 +3,9 @@ import { useSelector } from 'react-redux'
 import SidePanel from './Sidepanel'
 
 const SidepanelWrapper = () => {
-  const vehicles = useSelector(
-    (state) => state.vehicles.vehiclesArray,
-  ).map((i) => i.showData())
+  const vehiclesSource = useSelector((state) => state.vehicles.vehiclesSource)
+
+  const vehicles = Object.values(vehiclesSource).map((i) => i.showData())
 
   return <SidePanel vehicles={vehicles} />
 }

@@ -8,13 +8,17 @@ import Map from './Map'
 
 */
 const MapContainer = () => {
-  const vehicles = useSelector(
-    (state) => state.vehicles.vehiclesArray,
-  ).map((vehicle) => vehicle.geojson())
+  const geojson = {
+    type: 'FeatureCollection',
+    features: [],
+  }
+
+  const vehiclesSource = useSelector((state) => state.vehicles.vehiclesSource)
+  geojson.features = Object.values(vehiclesSource).map((i) => i.geojson())
 
   return (
     <Box fill>
-      <Map vehicles={vehicles} />
+      <Map geojson={geojson} />
     </Box>
   )
 }

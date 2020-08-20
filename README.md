@@ -10,3 +10,4 @@
 - [ ] Clicking on point should add an HTML marker
 - [ ] Points should be filterable based on properties (through some kind UI)
 - [x] Map should switch to satellite imagery as user zooms in
+- [ ] Should be able to remove vehicle from sidepanel

@@ -13,10 +13,12 @@ const MapContainer = styled.div`
 const terrainStyle = 'mapbox://styles/brianbancroft/ck2r23wm408me1csue4nbr8zq'
 const rasterStyle = 'mapbox://styles/mapbox/satellite-v9'
 
-const MapboxGLMap = ({ vehicles }) => {
+const MapboxGLMap = ({ geojson }) => {
   const [map, setMap] = useState(null)
   const mapContainer = useRef(null)
+  const [sourceData, setSourceData] = useState({})
   const [basemapStyle, setBasemapStyle] = useState(false)
+  const [popup, setPopup] = useState(null)
 
   useEffect(() => {
     mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_MAP_KEY
@@ -37,6 +39,13 @@ const MapboxGLMap = ({ vehicles }) => {
       map.on('click', ({ lngLat: center }) => {
         map.flyTo({ center })
       })
+
+      setPopup(
+        new mapboxgl.Popup({
+          closeButton: true,
+          closeOnClick: false,
+        }),
+      )
     }
 
     if (!map) initializeMap({ setMap, mapContainer })
@@ -64,142 +73,41 @@ const MapboxGLMap = ({ vehicles }) => {
     })
   }, [map])
 
+  // Set source and style when first layer added
   useEffect(() => {
     if (!map) return
-    const loadVehicles = () => {
-      const activeLayers = map.getStyle().layers.map((i) => i.id)
 
-      for (let i = 0; i < vehicles.length; i++) {
-        let id = `point-${vehicles[i].properties.callsign}`
-        if (activeLayers.indexOf(id) !== -1) continue
+    if (map.getSource('vehicles') || geojson.features.length !== 1) return
 
-        map.addSource(id, {
-          type: 'geojson',
-          data: vehicles[i],
-        })
-
-        map.addLayer({
-          id,
-          type: 'circle',
-          source: id,
-          paint: {
-            'circle-radius': 10,
-            'circle-color': colorMap[vehicles[i].properties.vehicleType],
-          },
-        })
-
-        map.on('mouseenter', id, function (e) {
-          // Change the cursor style as a UI indicator.
-          map.getCanvas().style.cursor = 'pointer'
-
-          var coordinates = e.features[0].geometry.coordinates.slice()
-          var vehicleType = e.features[0].properties.vehicleType
-
-          console.log('hi hi hi')
-
-          console.log('Vehicle type ', vehicleType)
-
-          // Ensure that if the map is zoomed out such that multiple
-          // copies of the feature are visible, the popup appears
-          // over the copy being pointed to.
-          // while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-          //   coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360
-          // }
-
-          // Populate the popup and set its coordinates
-          // based on the feature found.
-          // popup.setLngLat(coordinates).setHTML(description).addTo(map)
-        })
-
-        map.on('mouseleave', id, function () {
-          map.getCanvas().style.cursor = ''
-          // popup.remove()
-        })
-      }
+    const baseData = {
+      type: 'geojson',
+      data: geojson,
     }
 
-    setTimeout(loadVehicles, 2000)
-  }, [basemapStyle])
-
-  // Looks for layers to add to map
-  useEffect(() => {
-    if (!map) return
-
-    const activeLayers = map.getStyle().layers.map((i) => i.id)
-
-    for (let i = 0; i < vehicles.length; i++) {
-      let id = `point-${vehicles[i].properties.callsign}`
-      if (activeLayers.indexOf(id) === -1) {
-        map.addSource(id, {
-          type: 'geojson',
-          data: vehicles[i],
-        })
-
-        map.addLayer({
-          id,
-          type: 'circle',
-          source: id,
-          paint: {
-            'circle-radius': 10,
-            'circle-color': colorMap[vehicles[i].properties.vehicleType],
-          },
-        })
-
-        map.on('mouseenter', id, function (e) {
-          // Change the cursor style as a UI indicator.
-          map.getCanvas().style.cursor = 'pointer'
-
-          var coordinates = e.features[0].geometry.coordinates.slice()
-          var vehicleType = e.features[0].properties.vehicleType
-
-          console.log('hi hi hi')
-
-          console.log('Vehicle type ', vehicleType)
-
-          // Ensure that if the map is zoomed out such that multiple
-          // copies of the feature are visible, the popup appears
-          // over the copy being pointed to.
-          // while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-          //   coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360
-          // }
-
-          // Populate the popup and set its coordinates
-          // based on the feature found.
-          // popup.setLngLat(coordinates).setHTML(description).addTo(map)
-        })
-
-        map.on('mouseleave', id, function () {
-          map.getCanvas().style.cursor = ''
-          // popup.remove()
-        })
-      } else {
-        map.getSource(id).setData(vehicles[i])
-      }
-    }
-    // console.log(
-    //   'Map layers ',
-    //   map.getStyle().layers.map((i) => i.id),
-    // )
-  }, [map, vehicles])
-
-  // Removes layers from the map
-  useEffect(() => {
-    if (!map) return
-    const activeLayers = map
-      .getStyle()
-      .layers.map((i) => i.id)
-      .filter((i) => /^point-/.test(i))
-    const loadedLayers = vehicles.map((i) => `point-${i.properties.callsign}`)
-
-    if (activeLayers.length <= loadedLayers.length) return
-
-    activeLayers.forEach((i) => {
-      if (loadedLayers.indexOf(i) !== -1) {
-        map.removeLayer(i)
-        map.removeSource(i)
-      }
+    map.addSource('vehicles', baseData)
+    map.addLayer({
+      id: 'vehicles',
+      type: 'circle',
+      source: 'vehicles',
+      paint: {
+        'circle-radius': 10,
+        'circle-color': '#627BC1',
+      },
     })
-  }, [map, vehicles])
+  }, [map, geojson])
+
+  // Updates vehicles
+  useEffect(() => {
+    if (!map) return
+    if (!map.getSource('vehicles')) return
+
+    map.getSource('vehicles').setData(geojson)
+  }, [map, geojson])
+
+  useEffect(() => {
+    if (map && sourceData.data.length > 0) {
+    } else console.log('Nothing in  map or sourceData ', map, sourceData.data)
+  }, [sourceData])
 
   return (
     <MapContainer

@@ -28,7 +28,7 @@ class Vehicle {
     getInitialCoordinates().then(this.#startTracking)
   }
 
-  #position = []
+  #position = [0, 0]
   #thetaOffset = null
   #radialModifier = null
   #vehicleType = null
