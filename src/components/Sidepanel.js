@@ -2,7 +2,7 @@ import React, { useEffect, useReducer } from 'react'
 
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
-import { Box, Button, TextInput } from 'grommet'
+import { Box, Button } from 'grommet'
 import {
   addNewTruck,
   removeTruck,
@@ -10,6 +10,7 @@ import {
 } from '../actions/truckAction'
 
 import SidepanelVehicleCard from './SidepanelVehicleCard'
+import SidepanelFilter from './SidepanelFilter'
 
 const SidepanelArea = styled(Box)`
   display: grid;
@@ -45,8 +46,8 @@ function reducer(state = initialState, action) {
 const Sidepanel = ({ vehicles }) => {
   const [state, localDispatch] = useReducer(reducer, initialState)
   const reset = () => localDispatch({ type: 'reset' })
-  const setFilter = (e) =>
-    localDispatch({ type: 'set-filter-string', filterString: e.target.value })
+  const setFilter = (filterString) =>
+    localDispatch({ type: 'set-filter-string', filterString })
   const setFilterResults = ({ matches, notMatches }) =>
     localDispatch({ type: 'set-filter-results', matches, notMatches })
 
@@ -127,19 +128,6 @@ const Sidepanel = ({ vehicles }) => {
       />
     ))
 
-  const FilterElements = () => (
-    <Box pad={{ bottom: 'xsmall' }} margin="small">
-      <Box>Filter</Box>
-      <Box>
-        <TextInput
-          value={vehicles.length < 2 ? 'Add vehicles to filter' : filterString}
-          onChange={setFilter}
-          disabled={vehicles.length < 2}
-        />
-      </Box>
-    </Box>
-  )
-
   return (
     <Box
       width="medium"
@@ -148,7 +136,7 @@ const Sidepanel = ({ vehicles }) => {
       direction="column"
       height="fill"
     >
-      <FilterElements />
+      <SidepanelFilter disabled={vehicles.length < 2} setFilter={setFilter} />
       <Box background="white" pad={{ bottom: 'small' }} fill>
         <SidepanelArea fill>
           {filterString ? <FilteredCards /> : <NormalCards />}
