@@ -32,6 +32,8 @@ function copyText(id) {
   copyText.select()
   copyText.setSelectionRange(0, 99999) /*For mobile devices*/
 
+  console.log('Copy text ', copyText)
+
   /* Copy the text inside the text field */
   document && document.execCommand('copy')
 }
@@ -113,9 +115,8 @@ const MarkerPanel = () => {
                   <input
                     value={`${decimalDegreeToDmsString(
                       position[0],
-                    )}, ${decimalDegreeToDmsString(position[1])}`}
+                    )} E, ${decimalDegreeToDmsString(position[1])} N`}
                     id="latLngDegreeMinuteSecond"
-                    disabled
                   />
                 </Text>
                 <Box>
@@ -138,7 +139,7 @@ const MarkerPanel = () => {
               </Box>
             </dd>
             <dt>
-              <Text size="small">Decimal Degrees</Text>
+              <Text size="small">Decimal Degrees (Long Lat)</Text>
             </dt>
             <dd>
               <Box direction="row" justify="between">
@@ -148,7 +149,6 @@ const MarkerPanel = () => {
                       position[1],
                     ).slice(0, 7)}`}
                     id="latLngDecDegrees"
-                    disabled
                   />
                 </Text>
                 <Box>

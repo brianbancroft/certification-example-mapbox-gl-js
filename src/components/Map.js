@@ -22,11 +22,10 @@ const generatepopup = ({ callsign, vehicleType, message }) => {
   return `<div><div><strong>${callsign}</strong></div><div>Latest message</div><div>${message}</div></div>`
 }
 
-const MapboxGLMap = ({ geojson, hoveredVehicle }) => {
+let marker
+const MapboxGLMap = ({ geojson, hoveredVehicle, mapMarkerVisible }) => {
   const [map, setMap] = useState(null)
   const mapContainer = useRef(null)
-  const [sourceData, setSourceData] = useState({})
-  const [basemapStyle, setBasemapStyle] = useState(false)
   const [popup, setPopup] = useState(null)
   const dispatch = useDispatch()
   const setHover = (id) => dispatch(setHoveredVehicle(id))
@@ -53,6 +52,14 @@ const MapboxGLMap = ({ geojson, hoveredVehicle }) => {
       })
 
       map.on('click', function (e) {
+        // Remove existing markers
+
+        console.log('existing marker ', marker)
+        if (marker) {
+          marker.setLngLat(e.lngLat)
+        } else {
+          marker = new mapboxgl.Marker().setLngLat(e.lngLat).addTo(map)
+        }
         setMapMarker(e.lngLat)
       })
 
@@ -66,6 +73,8 @@ const MapboxGLMap = ({ geojson, hoveredVehicle }) => {
 
     if (!map) initializeMap({ setMap, mapContainer })
   }, [map])
+
+  useEffect(() => {}, [])
 
   // Sets map layer switch effect
   useEffect(() => {
@@ -85,7 +94,6 @@ const MapboxGLMap = ({ geojson, hoveredVehicle }) => {
 
       const selectedStyle = mapZoom > 10 ? rasterStyle : terrainStyle
       map.setStyle(selectedStyle)
-      setBasemapStyle(selectedStyle)
     })
   }, [map])
 
@@ -184,11 +192,6 @@ const MapboxGLMap = ({ geojson, hoveredVehicle }) => {
     map.getSource('vehicles').setData(geojson)
   }, [map, geojson])
 
-  useEffect(() => {
-    if (map && sourceData.data.length > 0) {
-    } else console.log('Nothing in  map or sourceData ', map, sourceData.data)
-  }, [sourceData])
-
   // Sets hover effect on marker if sidepanel vehicle hovered over
   useEffect(() => {
     if (!map) return
@@ -211,6 +214,12 @@ const MapboxGLMap = ({ geojson, hoveredVehicle }) => {
       })
     }
   }, [hoveredVehicle])
+
+  // Removes map marker if stripped by "x" button
+  useEffect(() => {
+    if (!map || !marker || mapMarkerVisible) return
+    marker.remove()
+  }, [mapMarkerVisible])
 
   return (
     <MapContainer
