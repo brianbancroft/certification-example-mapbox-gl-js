@@ -252,6 +252,7 @@ const MapboxGLMap = ({
   useEffect(() => {
     if (!map || !marker || mapMarkerVisible) return
     marker.remove()
+    marker = null
   }, [mapMarkerVisible])
 
   return (

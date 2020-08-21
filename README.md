@@ -11,5 +11,6 @@
 - [x] Points should be filterable based on properties (through some kind UI)
 - [x] Map should switch to satellite imagery as user zooms in
 - [ ] Should be able to remove vehicle from sidepanel
-- [ ] Limit number of vehicles to be called to 10
-- [ ] Fix "Register vehicle" to bottom of side panel
+- [x] Limit number of vehicles to be called to 10
+- [x] Fix "Register vehicle" to bottom of side panel
+- [ ] Input should not lose focus on keyup
