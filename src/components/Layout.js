@@ -18,7 +18,7 @@ const Layout = ({ content }) => {
         <Box><Heading level="3" margin={{top: 'small', bottom: 'medium'}}>Mapbox Dashboard Example</Heading></Box>
         <Box>
           This is a example for the Mapbox Partner Certification project. It
-          demonstrates a bare-bones vehicle tracking dashboard.
+          demonstrates a bare-bones vehicle tracking dashboard for command centres and desktop environments.
         </Box>
         <Box margin={{vertical: 'small'}} pad={{horizontal: 'small'}}>
           <Text size="small">

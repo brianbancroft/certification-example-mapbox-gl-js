@@ -2,7 +2,7 @@ import React, { useEffect, useReducer } from 'react'
 
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
-import { Box, Button } from 'grommet'
+import { Box, Button, Heading } from 'grommet'
 import {
   addNewTruck,
   removeTruck,
@@ -12,7 +12,7 @@ import {
 import SidepanelVehicleCard from './SidepanelVehicleCard'
 import SidepanelFilter from './SidepanelFilter'
 
-const SidepanelArea = styled(Box)`
+const VehicleArea = styled(Box)`
   display: grid;
   grid-template-rows: repeat(auto-fill, 267px);
   grid-row-gap: 10px;
@@ -139,16 +139,23 @@ const Sidepanel = ({ vehicles }) => {
   return (
     <Box
       width="medium"
-      background="light-4"
-      border={{ side: 'left', size: 'medium' }}
+      border={{ side: 'left', size: 'medium', color: 'dark-5' }}
       direction="column"
       height="fill"
     >
-      <SidepanelFilter disabled={vehicles.length < 2} setFilter={setFilter} />
-      <Box background="white" pad={{ bottom: 'small' }} fill>
-        <SidepanelArea fill>
+      <Box
+        align="center"
+        border={{ side: 'bottom', size: 'small', color: 'dark-5' }}
+      >
+        <Heading level="3" pad={{ vertical: 'small' }}>
+          Active Crews
+        </Heading>
+      </Box>
+      <Box pad={{ bottom: 'small' }} fill>
+        <VehicleArea fill>
           {filterString ? <FilteredCards /> : <NormalCards />}
-        </SidepanelArea>
+        </VehicleArea>
+        <SidepanelFilter disabled={vehicles.length < 2} setFilter={setFilter} />
         <Box pad="medium">
           <Button
             primary

@@ -11,13 +11,16 @@ const SidepanelFilter = ({ disabled, setFilter }) => {
   }, [value])
 
   return (
-    <Box margin="small">
+    <Box
+      margin="small"
+      border={{ side: 'top', size: 'small', color: 'dark-5' }}
+    >
       <FormField label="Filter">
         <TextInput
           value={disabled ? 'Add vehicles to filter' : value}
           disabled={disabled}
           onChange={(e) => setValue(e.target.value)}
-          style={{ paddingBottom: '20px' }}
+          style={{ paddingBottom: '45px' }}
         />
       </FormField>
     </Box>
