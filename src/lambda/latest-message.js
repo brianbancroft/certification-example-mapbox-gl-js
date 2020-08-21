@@ -29,11 +29,15 @@ const sentences = [
     type: 'request',
     message: 'Can we get the project manager here? I need sign off.',
   },
+  {
+    type: 'alert',
+    message: 'We might be stuck...',
+  },
 ]
 
 const getStatement = () =>
   sentences[Math.floor(Math.random() * sentences.length)]
 
 exports.handler = async (event, _context, callback) => {
-  return { statusCode: 200, body: getStatement() }
+  return { statusCode: 200, body: JSON.stringify(getStatement()) }
 }

@@ -18,8 +18,8 @@ const terrainStyle = 'mapbox://styles/brianbancroft/ck2r23wm408me1csue4nbr8zq'
 const rasterStyle = 'mapbox://styles/mapbox/satellite-v9'
 
 // Generates HTML For mapbox popup
-const generatepopup = ({ callsign, vehicleType, message }) => {
-  return `<div><div><strong>${callsign}</strong></div><div>Latest message</div><div>${message}</div></div>`
+const generatepopup = ({ callsign, vehicleType, message, type }) => {
+  return `<div class="${type}"><div><strong>New ${type} from callsign ${callsign}</strong></div><div>Latest message</div><div class="content-paper">${message}</div></div>`
 }
 
 let marker
@@ -192,15 +192,15 @@ const MapboxGLMap = ({
         coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360
       }
 
-      const { data: message } = await get(
-        `/.netlify/functions/latest-message?callsign=${callsign}`,
-      )
+      const {
+        data: { message, type },
+      } = await get(`/.netlify/functions/latest-message?callsign=${callsign}`)
 
       // Populate the popup and set its coordinates
       // based on the feature found.
       popup
         .setLngLat(coordinates)
-        .setHTML(generatepopup({ callsign, vehicleType, message }))
+        .setHTML(generatepopup({ callsign, vehicleType, message, type }))
         .addTo(map)
     })
 
