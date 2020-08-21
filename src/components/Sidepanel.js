@@ -126,37 +126,47 @@ const Sidepanel = ({ vehicles }) => {
       />
     ))
 
+  const FilterElements = () => (
+    <Box pad={{ bottom: 'xsmall' }} margin="small">
+      <Box>Filter</Box>
+      <Box>
+        <TextInput
+          value={filterString}
+          onChange={setFilter}
+          disabled={vehicles.length < 2}
+        />
+      </Box>
+    </Box>
+  )
+
   return (
     <Box
       width="medium"
       background="light-4"
       border={{ side: 'left', size: 'medium' }}
       direction="column"
+      height="fill"
     >
-      <Box heght="small" margin="small">
-        <Box>Filter</Box>
-        <Box>
-          <TextInput
-            value={filterString}
-            onChange={setFilter}
-            disabled={vehicles.length < 2}
+      <FilterElements />
+      <Box background="white" pad={{ bottom: 'small' }} fill>
+        <SidepanelArea fill>
+          {filterString ? <FilteredCards /> : <NormalCards />}
+        </SidepanelArea>
+        <Box pad="medium">
+          <Button
+            primary
+            color="neutral-1"
+            label={
+              <>
+                Add New Vehicle <br />
+                {vehicles.length} / 10
+              </>
+            }
+            disabled={vehicles.length >= 10}
+            hoverIndicator
+            onClick={generateTruck}
           />
         </Box>
-      </Box>
-      <Box background="white" fill pad={{ bottom: 'small' }}>
-        <SidepanelArea>
-          {filterString ? <FilteredCards /> : <NormalCards />}
-          <Box pad="medium">
-            <Button
-              primary
-              round
-              color="accent-3"
-              label="Register Vehicle"
-              hoverIndicator
-              onClick={generateTruck}
-            />
-          </Box>
-        </SidepanelArea>
       </Box>
     </Box>
   )
