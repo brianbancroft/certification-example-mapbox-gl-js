@@ -3,6 +3,7 @@ import { Box, Header, Main } from 'grommet'
 
 import SidePanelWrapper from './SidepanelWrapper'
 import MapContainer from './MapContainer'
+import MarkerPanel from './MarkerPanel'
 
 const Layout = ({ content }) => {
   return (
@@ -14,6 +15,7 @@ const Layout = ({ content }) => {
         <Box fill direction="row">
           <MapContainer />
           <SidePanelWrapper />
+          <MarkerPanel />
         </Box>
       </Main>
     </>

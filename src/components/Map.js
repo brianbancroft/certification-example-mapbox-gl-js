@@ -6,6 +6,7 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 import styled from 'styled-components'
 import { useDispatch } from 'react-redux'
 import { setHoveredVehicle } from '../actions/truckAction'
+import { setMarker } from '../actions/mapMarkerAction'
 import { mapboxColourExpression } from '../constants/truckTypes'
 
 const MapContainer = styled.div`
@@ -29,6 +30,7 @@ const MapboxGLMap = ({ geojson, hoveredVehicle }) => {
   const [popup, setPopup] = useState(null)
   const dispatch = useDispatch()
   const setHover = (id) => dispatch(setHoveredVehicle(id))
+  const setMapMarker = ({ lng, lat }) => dispatch(setMarker([lng, lat]))
 
   useEffect(() => {
     mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_MAP_KEY
@@ -48,6 +50,10 @@ const MapboxGLMap = ({ geojson, hoveredVehicle }) => {
 
       map.on('click', ({ lngLat: center }) => {
         map.flyTo({ center })
+      })
+
+      map.on('click', function (e) {
+        setMapMarker(e.lngLat)
       })
 
       setPopup(
