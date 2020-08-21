@@ -23,7 +23,12 @@ const generatepopup = ({ callsign, vehicleType, message }) => {
 }
 
 let marker
-const MapboxGLMap = ({ geojson, hoveredVehicle, mapMarkerVisible }) => {
+const MapboxGLMap = ({
+  ignoredVehicles,
+  geojson,
+  hoveredVehicle,
+  mapMarkerVisible,
+}) => {
   const [map, setMap] = useState(null)
   const mapContainer = useRef(null)
   const [popup, setPopup] = useState(null)
@@ -74,7 +79,24 @@ const MapboxGLMap = ({ geojson, hoveredVehicle, mapMarkerVisible }) => {
     if (!map) initializeMap({ setMap, mapContainer })
   }, [map])
 
-  useEffect(() => {}, [])
+  // Sets changes to map layers for ignored vehicles
+  useEffect(() => {
+    if (!map || geojson.features.length === 0) return
+
+    geojson.features.forEach((feature) => {
+      if (ignoredVehicles.indexOf(feature.id) !== -1) {
+        map.setFeatureState(
+          { source: 'vehicles', id: feature.id },
+          { ignore: true },
+        )
+      } else {
+        map.setFeatureState(
+          { source: 'vehicles', id: feature.id },
+          { ignore: false },
+        )
+      }
+    })
+  }, [ignoredVehicles, geojson])
 
   // Sets map layer switch effect
   useEffect(() => {
@@ -117,13 +139,24 @@ const MapboxGLMap = ({ geojson, hoveredVehicle, mapMarkerVisible }) => {
       paint: {
         'circle-radius': 10,
         'circle-stroke-color': '#222',
+        'circle-opacity': [
+          'case',
+          ['boolean', ['feature-state', 'ignore'], true],
+          0.05,
+          1,
+        ],
         'circle-stroke-width': [
           'case',
           ['boolean', ['feature-state', 'hover'], false],
           2,
           0.5,
         ],
-        'circle-color': mapboxColourExpression,
+        'circle-color': [
+          'case',
+          ['boolean', ['feature-state', 'ignore'], true],
+          '#555',
+          mapboxColourExpression,
+        ],
       },
     })
 

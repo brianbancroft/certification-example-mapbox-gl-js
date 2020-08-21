@@ -4,11 +4,12 @@
 - [x] Map should present a series of points, updating in real-time
 - [x] Hovering over a point should change a visual attribute (size,  color, etc)
 - [x] Hovering over a point should create a popup
-- [ ] Panning away from point should remove popup
 - [x] Popups should contain data from an external source AND properties of the point
 - [x] Map should be searchable
 - [x] Map should center on click
 - [x] Clicking on point should add an HTML marker
-- [ ] Points should be filterable based on properties (through some kind UI)
+- [x] Points should be filterable based on properties (through some kind UI)
 - [x] Map should switch to satellite imagery as user zooms in
 - [ ] Should be able to remove vehicle from sidepanel
+- [ ] Limit number of vehicles to be called to 10
+- [ ] Fix "Register vehicle" to bottom of side panel

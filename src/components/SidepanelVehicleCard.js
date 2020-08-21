@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Box, Button, TextInput, Heading, Text } from 'grommet'
+import { Box, Button, Heading, Text } from 'grommet'
 import { Close } from 'grommet-icons'
 import { useDispatch } from 'react-redux'
 import { colorMap } from '../constants/truckTypes'
@@ -16,8 +16,6 @@ const SidepanelVehicleCard = ({
   const [borderWidth, setBorderWidth] = useState('small')
   const dispatch = useDispatch()
   const setHover = (id) => dispatch(setHoveredVehicle(id))
-
-  console.log('Hovered vehicle ', hoveredVehicle)
 
   return (
     <Box

@@ -1,6 +1,7 @@
 const defaultState = {
   vehiclesSource: {},
   hoveredVehicle: '',
+  ignoredVehicles: [],
 }
 
 export default (state = defaultState, action) => {
@@ -26,6 +27,9 @@ export default (state = defaultState, action) => {
 
     case 'SET_HOVERED_VEHICLE':
       return { ...state, hoveredVehicle: action.vehicle }
+
+    case 'SET_IGNORED_VEHICLES':
+      return { ...state, ignoredVehicles: action.ignoredVehicles }
 
     default:
       return state

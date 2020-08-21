@@ -20,6 +20,11 @@ export const setHoveredVehicle = (vehicle) => ({
   vehicle,
 })
 
+export const setSubduedVehicles = (ignoredVehicles) => ({
+  type: 'SET_IGNORED_VEHICLES',
+  ignoredVehicles,
+})
+
 export const addNewTruck = async (dispatch) => {
   const vehicle = new Vehicle({})
 

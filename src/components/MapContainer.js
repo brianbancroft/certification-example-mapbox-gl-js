@@ -16,6 +16,7 @@ const MapContainer = () => {
   const vehiclesSource = useSelector((state) => state.vehicles.vehiclesSource)
   const { hoveredVehicle } = useSelector((state) => state.vehicles)
   const { visible: mapMarkerVisible } = useSelector((state) => state.mapMarker)
+  const ignoredVehicles = useSelector((state) => state.vehicles.ignoredVehicles)
 
   geojson.features = Object.values(vehiclesSource).map((i, id) => ({
     ...i.geojson(),
@@ -28,6 +29,7 @@ const MapContainer = () => {
         geojson={geojson}
         hoveredVehicle={hoveredVehicle}
         mapMarkerVisible={mapMarkerVisible}
+        ignoredVehicles={ignoredVehicles}
       />
     </Box>
   )

@@ -5,7 +5,10 @@ import SidePanel from './Sidepanel'
 const SidepanelWrapper = () => {
   const vehiclesSource = useSelector((state) => state.vehicles.vehiclesSource)
 
-  const vehicles = Object.values(vehiclesSource).map((i) => i.showData())
+  const vehicles = Object.values(vehiclesSource).map((i, id) => ({
+    ...i.showData(),
+    id,
+  }))
 
   return <SidePanel vehicles={vehicles} />
 }
