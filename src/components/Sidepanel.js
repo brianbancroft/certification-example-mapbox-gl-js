@@ -56,6 +56,7 @@ const Sidepanel = ({ vehicles }) => {
   const dispatch = useDispatch()
   const hideVehicles = (vehicles) => dispatch(setSubduedVehicles(vehicles))
   const { hoveredVehicle } = useSelector((state) => state.vehicles)
+  const { mapReady } = useSelector((state) => state.mapMarker)
   const generateTruck = () => {
     addNewTruck(dispatch)
   }
@@ -131,7 +132,7 @@ const Sidepanel = ({ vehicles }) => {
       <Box>Filter</Box>
       <Box>
         <TextInput
-          value={filterString}
+          value={vehicles.length < 2 ? 'Add vehicles to filter' : filterString}
           onChange={setFilter}
           disabled={vehicles.length < 2}
         />
@@ -162,7 +163,7 @@ const Sidepanel = ({ vehicles }) => {
                 {vehicles.length} / 10
               </>
             }
-            disabled={vehicles.length >= 10}
+            disabled={!mapReady || vehicles.length >= 10}
             hoverIndicator
             onClick={generateTruck}
           />

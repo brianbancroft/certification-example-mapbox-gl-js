@@ -6,8 +6,8 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 import styled from 'styled-components'
 import { useDispatch } from 'react-redux'
 import { setHoveredVehicle } from '../actions/truckAction'
-import { setMarker } from '../actions/mapMarkerAction'
-import { mapboxColourExpression } from '../constants/truckTypes'
+import { setMarker, mapReady } from '../actions/mapMarkerAction'
+import { mapboxColourExpression } from '../constants/crewTypes'
 
 const MapContainer = styled.div`
   width: 100%;
@@ -19,8 +19,14 @@ const rasterStyle = 'mapbox://styles/mapbox/satellite-v9'
 
 // Generates HTML For mapbox popup
 const generatepopup = ({ callsign, vehicleType, message, type }) => {
-  return `<div class="${type}"><div><strong>New ${type} from callsign ${callsign}</strong></div><div>Latest message</div><div class="content-paper">${message}</div></div>`
+  return `<div class="${type}"><div><strong>New ${type} from callsign ${callsign}</strong></div><div class="content-paper">${message}</div></div>`
 }
+
+// Restricts panning extent for the map
+const maxBounds = [
+  [-118.93, 54.6737], // Southwest coordinates
+  [-106.75, 58.5824], // Northeast coordinates
+]
 
 let marker
 const MapboxGLMap = ({
@@ -35,6 +41,7 @@ const MapboxGLMap = ({
   const dispatch = useDispatch()
   const setHover = (id) => dispatch(setHoveredVehicle(id))
   const setMapMarker = ({ lng, lat }) => dispatch(setMarker([lng, lat]))
+  const setMapReady = () => dispatch(mapReady())
 
   useEffect(() => {
     mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_MAP_KEY
@@ -45,11 +52,13 @@ const MapboxGLMap = ({
         style: terrainStyle,
         center: [-112.1038292, 56.7897412],
         zoom: 7,
+        maxBounds,
       })
 
       map.on('load', () => {
         setMap(map)
         map.resize()
+        setMapReady()
       })
 
       map.on('click', ({ lngLat: center }) => {

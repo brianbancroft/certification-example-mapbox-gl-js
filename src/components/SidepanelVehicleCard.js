@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Box, Button, Heading, Text } from 'grommet'
 import { Close } from 'grommet-icons'
 import { useDispatch } from 'react-redux'
-import { colorMap } from '../constants/truckTypes'
+import { colorMap } from '../constants/crewTypes'
 import { setHoveredVehicle } from '../actions/truckAction'
 
 const SidepanelVehicleCard = ({
@@ -34,7 +34,13 @@ const SidepanelVehicleCard = ({
         setBorderWidth('small')
       }}
     >
-      <Box background={colorMap[vehicleType]} pad="small">
+      <Box
+        background={colorMap[vehicleType]}
+        pad="small"
+        direction="row"
+        justify="between"
+        align="center"
+      >
         <Box>
           <Heading level="4" margin={{ vertical: 'xxsmall' }}>
             {vehicleType} - {callsign}
@@ -45,8 +51,24 @@ const SidepanelVehicleCard = ({
         </Box>
       </Box>
       <Box height="small">
-        <Text>Name: {operator}</Text>
-        <Text>Company: {company}</Text>
+        <dl>
+          <dt>
+            <Heading level="5" margin="xsmall">
+              Name
+            </Heading>
+          </dt>
+          <dd>
+            <Text>{operator}</Text>
+          </dd>
+          <dt>
+            <Heading level="5" margin="xsmall">
+              Company
+            </Heading>
+          </dt>
+          <dd>
+            <Text>{company}</Text>
+          </dd>
+        </dl>
       </Box>
     </Box>
   )

@@ -6,3 +6,7 @@ export const setMarker = (position) => ({
 export const resetMarker = () => ({
   type: 'RESET_MAP_MARKER',
 })
+
+export const mapReady = () => ({
+  type: 'MAP_READY',
+})

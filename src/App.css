@@ -111,40 +111,10 @@ pre {
   width: 176px;
   height: 80px;
   background: #fff;
-  border-radius: 2px;
-}
-
-.content-paper::before,
-.content-paper::after {
-  content: '';
-  position: absolute;
-  bottom: 10px;
-  width: 40%;
-  height: 10px;
-  box-shadow: 0 5px 14px rgba(0,0,0,.7);
-  z-index: -1;
-  transition: all .3s ease-in-out;
-}
-
-.content-paper::before {
-  left: 2px;
-  transform: skew(-5deg) rotate(-5deg);
-}
-
-.content-paper::after {
-  right: 2px;
-  transform: skew(5deg) rotate(5deg);
-}
-
-.content-paper:hover::before,
-.content-paper:hover::after {
+  border: 1px solid #333;
+  padding: 3px;
+  border-radius: 5px;
   box-shadow: 0 2px 14px rgba(0,0,0,.4);
 }
 
-.content-paper:hover::before {
-  left: 5px;
-}
 
-.content-paper:hover::after {
-  right: 5px;
-}
