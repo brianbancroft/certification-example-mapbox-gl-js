@@ -71,6 +71,7 @@ class Vehicle {
     operator: this.#operator,
     position: this.#position,
     loading: this.loading,
+    stop: this.stop,
   })
 
   geojson = () => ({
@@ -87,7 +88,7 @@ class Vehicle {
   })
 
   stop = () => {
-    this.continue = false
+    this.#continue = false
   }
 }
 

@@ -51,9 +51,7 @@ const Sidepanel = ({ vehicles }) => {
   const setFilterResults = ({ matches, notMatches }) =>
     localDispatch({ type: 'set-filter-results', matches, notMatches })
 
-  const { matches, notMatches, filterString } = state
-  console.log('Filter string ', filterString)
-
+  const { matches, filterString } = state
   const dispatch = useDispatch()
   const hideVehicles = (vehicles) => dispatch(setSubduedVehicles(vehicles))
   const { hoveredVehicle } = useSelector((state) => state.vehicles)
@@ -106,13 +104,23 @@ const Sidepanel = ({ vehicles }) => {
     }
   }, [filterString, vehicles])
 
+  const deleteTruck = (callsign) => {
+    const [vehicle] = vehicles.filter((i) => i.callsign === callsign)
+    // Stop subsequent polling
+    if (!vehicle) return
+    vehicle.stop()
+    vehicles.splice(vehicle.id, 1)
+
+    dispatch(removeTruck(callsign))
+  }
+
   const NormalCards = () =>
     vehicles.map((vehicle, index) => {
       return (
         <SidepanelVehicleCard
           {...vehicle}
           key={`${vehicle.vehicleType}-${vehicle.callsign}`}
-          deleteTruck={(callsign) => dispatch(removeTruck(callsign))}
+          deleteTruck={deleteTruck}
           hoveredVehicle={hoveredVehicle}
         />
       )
@@ -123,7 +131,7 @@ const Sidepanel = ({ vehicles }) => {
       <SidepanelVehicleCard
         {...vehicle}
         key={`${vehicle.vehicleType}-${vehicle.callsign}-visible`}
-        deleteTruck={(callsign) => dispatch(removeTruck(callsign))}
+        deleteTruck={deleteTruck}
         hoveredVehicle={hoveredVehicle}
       />
     ))
