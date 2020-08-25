@@ -61,14 +61,8 @@ const MapboxGLMap = ({
         setMapReady()
       })
 
-      map.on('click', ({ lngLat: center }) => {
-        map.flyTo({ center })
-      })
-
       map.on('click', function (e) {
         // Remove existing markers
-
-        console.log('existing marker ', marker)
         if (marker) {
           marker.setLngLat(e.lngLat)
         } else {
@@ -128,6 +122,14 @@ const MapboxGLMap = ({
     })
   }, [map])
 
+  useEffect(() => {
+    if (!map) return
+
+    map.on('click', ({ lngLat: center }) => {
+      map.flyTo({ center })
+    })
+  }, [map])
+
   // Set source and style when first layer added
   useEffect(() => {
     if (!map) return
@@ -172,12 +174,9 @@ const MapboxGLMap = ({
     let hoverFeatureId
 
     map.on('mouseenter', 'vehicles', async function (e) {
-      console.log('Mouse enter triggered')
-
       map.getCanvas().style.cursor = 'pointer'
       if (e.features.length > 0) {
         if (hoverFeatureId) {
-          console.log('Setting hover feature id false')
           map.setFeatureState(
             { source: 'vehicles', id: hoverFeatureId },
             { hover: false },
@@ -185,7 +184,6 @@ const MapboxGLMap = ({
         }
 
         hoverFeatureId = e.features[0].id
-        console.log('Setting hover feature id true')
         map.setFeatureState(
           { source: 'vehicles', id: hoverFeatureId },
           { hover: true },

@@ -32,8 +32,6 @@ function copyText(id) {
   copyText.select()
   copyText.setSelectionRange(0, 99999) /*For mobile devices*/
 
-  console.log('Copy text ', copyText)
-
   /* Copy the text inside the text field */
   document && document.execCommand('copy')
 }
@@ -78,7 +76,6 @@ const MarkerPanel = () => {
 
   const dispatch = useDispatch()
   const closeMarkerPanel = () => {
-    console.log('Close panel triggered')
     dispatch(resetMarker())
   }
 

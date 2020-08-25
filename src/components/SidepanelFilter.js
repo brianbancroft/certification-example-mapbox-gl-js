@@ -6,7 +6,6 @@ const SidepanelFilter = ({ disabled, setFilter }) => {
 
   // Sets filter in parent component on change
   useEffect(() => {
-    console.log('Use effect triggered')
     setFilter(value)
   }, [value])
 

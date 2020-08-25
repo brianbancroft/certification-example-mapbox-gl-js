@@ -156,5 +156,3 @@ const generateVehiclePosition = generatePositionHof(coreData)
 const vehicleResp = generateNumberVehicles(6).map(
   pipe(getVehicleOffsettedTheta, generateVehiclePosition, serializeOutput),
 )
-
-console.log('Vehicle response ', vehicleResp)
