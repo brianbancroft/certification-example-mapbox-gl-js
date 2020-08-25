@@ -8,4 +8,5 @@ https://bancroft.io/Sample/sample-mapbox-gl-js-certification
 
 ## Site
 
-https://vehicle-tracker-sample.bancroft.io/
+
+https://vehicle-tracker.netlify.app/
