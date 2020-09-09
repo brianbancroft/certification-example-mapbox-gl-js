@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 import { Box, Button, Heading, Text } from 'grommet'
 import { Close } from 'grommet-icons'
 import { useDispatch } from 'react-redux'
@@ -72,6 +73,22 @@ const SidepanelVehicleCard = ({
       </Box>
     </Box>
   )
+}
+
+SidepanelVehicleCard.propTypes = {
+  vehicleType: PropTypes.string.isRequired,
+  company: PropTypes.string.isRequired,
+  callsign: PropTypes.string.isRequired,
+  operator: PropTypes.string.isRequired,
+  deleteTruck: PropTypes.func,
+  hoveredVehicle: PropTypes.bool,
+}
+
+SidepanelVehicleCard.defaultProps = {
+  deleteTruck: () => {
+    console.log('deleteTruck function not implemented')
+  },
+  hoveredVehicle: false,
 }
 
 export default SidepanelVehicleCard
